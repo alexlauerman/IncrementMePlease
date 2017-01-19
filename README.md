@@ -6,7 +6,7 @@ An example use case would be if  you are active scanning a "create user" form, w
 ##Example
 It will match:
 ```
-{"name":"IncrementMePlease",
+{"name":"IncrementMePlease"}
 ```
 And replace it with:
 ```
