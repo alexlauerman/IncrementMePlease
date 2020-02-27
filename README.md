@@ -18,4 +18,6 @@ And replace it with:
 ```
 
 ## Releases
+This is available in the BApp store as the "Token Incrementor" extension.
+
 See the [Releases](https://github.com/alexlauerman/IncrementMePlease/releases) tab for a pre-built jar.
