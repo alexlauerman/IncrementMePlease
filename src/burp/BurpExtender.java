@@ -3,6 +3,9 @@ package burp;
 import java.io.PrintWriter;
 import java.util.Random;
 import java.util.List;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class BurpExtender implements burp.IBurpExtender, burp.IHttpListener
@@ -12,8 +15,12 @@ public class BurpExtender implements burp.IBurpExtender, burp.IHttpListener
     private PrintWriter stderr;
 
     private int counter = 0;
+    private int counterInt = 0;
+    private float counterFloat = 0;
     private String nextToken = "";
     private String nextTimestamp = "";
+    private Boolean foundInt = false;
+    private Boolean foundFloat = false;
     private Random rand = new Random();
     int randomint = rand.nextInt(999);
 
@@ -57,12 +64,77 @@ public class BurpExtender implements burp.IBurpExtender, burp.IHttpListener
             String reqBody = request.substring(iRequest.getBodyOffset());
 
             if (reqBody.contains("IncrementMePlease")) {
-
-                int offset = reqBody.indexOf("IncrementMePlease");
-                stdout.println(offset);
-                reqBody = reqBody.replaceAll("IncrementMePlease", "Incremented" + String.valueOf(randomint) + String.valueOf(counter));
+                // int offset = reqBody.indexOf("IncrementMePlease");
+                // stdout.println(offset);
                 counter++;
+                reqBody = reqBody.replaceAll("IncrementMePlease", "Incremented" + String.valueOf(randomint) + String.valueOf(counter));
                 updated = true;
+            }
+
+            if (reqBody.contains("IntMePlease")) {
+                // int offset = reqBody.indexOf("IntMePlease");
+                // stdout.println(offset);
+                if (!foundInt) {
+                    Pattern pattern = Pattern.compile(".*IntMePlease(\\d*).*");
+                    Matcher matcher = pattern.matcher(reqBody);
+                    if (matcher.find()){
+                        int counterIntFound = Integer.parseInt(matcher.group(1));
+                        // System.out.println(counterIntFound);
+                        counterInt = counterIntFound;
+                        foundInt = true;
+                    }
+                }
+
+                counterInt++;
+                reqBody = reqBody.replaceAll("IntMePlease\\d*", String.valueOf(counterInt));
+                updated = true;
+            }
+
+            if (reqBody.contains("FloatMePlease")) {
+                // int offset = reqBody.indexOf("FloatMePlease");
+                // stdout.println(offset);
+                if (!foundFloat) {
+                    Pattern pattern = Pattern.compile(".*FloatMePlease(\\d*\\.\\d*).*");
+                    Matcher matcher = pattern.matcher(reqBody);
+                    if (matcher.find()){
+                        float counterFloutFound = Float.parseFloat(matcher.group(1));
+                        // System.out.println(counterFloutFound);
+                        counterFloat = counterFloutFound;
+                        foundFloat = true;
+                    }
+                }
+
+                counterFloat++;
+                reqBody = reqBody.replaceAll("FloatMePlease(\\d*\\.\\d*)?", String.valueOf(counterFloat));
+                updated = true;
+            }
+
+            if (reqBody.contains("GUIDMePlease")) {
+                // int offset = reqBody.indexOf("GUIDMePlease");
+                // stdout.println(offset);
+                reqBody = reqBody.replaceAll("GUIDMePlease", String.valueOf(UUID.randomUUID()));
+                updated = true;
+            }
+
+            for (int i = 0; i < headers.size(); i++) {
+                String header = headers.get(i);
+                if (header.contains("IncrementMePlease")) {
+                    header = header.replaceAll("IncrementMePlease", "Incremented" + String.valueOf(randomint) + String.valueOf(counter));
+                    updated = true;
+                }
+                if (header.contains("IntMePlease")) {
+                    header = header.replaceAll("IntMePlease\\d*", String.valueOf(counterInt));
+                    updated = true;
+                }
+                if (header.contains("FloatMePlease")) {
+                    header = header.replaceAll("FloatMePlease(\\d*\\.\\d*)?", String.valueOf(counterFloat));
+                    updated = true;
+                }
+                if (header.contains("GUIDMePlease")) {
+                    header = header.replaceAll("GUIDMePlease", String.valueOf(UUID.randomUUID()));
+                    updated = true;
+                }
+                headers.set(i, header);
             }
 
             if (updated) {
