@@ -1,0 +1,12 @@
+Uuid: ae166662024149f981bb6920cf3c8960
+ExtensionType: 1
+Name: Token Incrementor
+RepoName: token-incrementor
+ScreenVersion: 1.0
+SerialVersion: 0
+MinPlatformVersion: 0
+ProOnly: False
+Author: Alex Lauerman
+ShortDescription: Increment a token in each request. Useful for parameters like username that must be unique.
+EntryPoint: build/libs/token-incrementor-all.jar
+BuildCommand: gradle fatJar
