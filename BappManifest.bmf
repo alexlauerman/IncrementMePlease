@@ -2,8 +2,8 @@ Uuid: ae166662024149f981bb6920cf3c8960
 ExtensionType: 1
 Name: Token Incrementor
 RepoName: token-incrementor
-ScreenVersion: 1.0
-SerialVersion: 0
+ScreenVersion: 1.1
+SerialVersion: 2
 MinPlatformVersion: 0
 ProOnly: False
 Author: Alex Lauerman
