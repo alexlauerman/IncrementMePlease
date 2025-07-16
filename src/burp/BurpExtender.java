@@ -119,14 +119,17 @@ public class BurpExtender implements burp.IBurpExtender, burp.IHttpListener
             for (int i = 0; i < headers.size(); i++) {
                 String header = headers.get(i);
                 if (header.contains("IncrementMePlease")) {
+                    counter++;
                     header = header.replaceAll("IncrementMePlease", "Incremented" + String.valueOf(randomint) + String.valueOf(counter));
                     updated = true;
                 }
                 if (header.contains("IntMePlease")) {
+                    counterInt++;
                     header = header.replaceAll("IntMePlease\\d*", String.valueOf(counterInt));
                     updated = true;
                 }
                 if (header.contains("FloatMePlease")) {
+                    counterFloat++;
                     header = header.replaceAll("FloatMePlease(\\d*\\.\\d*)?", String.valueOf(counterFloat));
                     updated = true;
                 }
