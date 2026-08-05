@@ -78,7 +78,7 @@ public class BurpExtender implements burp.IBurpExtender, burp.IHttpListener
                     Pattern pattern = Pattern.compile(".*IntMePlease(\\d*).*");
                     Matcher matcher = pattern.matcher(reqBody);
                     if (matcher.find()){
-                        int counterIntFound = Integer.parseInt(matcher.group(1));
+                        int counterIntFound = matcher.group(1).isEmpty() ? 0 : Integer.parseInt(matcher.group(1));
                         // System.out.println(counterIntFound);
                         counterInt = counterIntFound;
                         foundInt = true;
