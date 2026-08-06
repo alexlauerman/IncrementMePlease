@@ -28,7 +28,7 @@ jobs:
       - name: Check the expected artifact was produced
         run: test -f build/libs/token-incrementor-all.jar
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: token-incrementor
           path: build/libs/token-incrementor-all.jar
