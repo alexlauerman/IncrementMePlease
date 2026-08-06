@@ -78,8 +78,17 @@ public class BurpExtender implements burp.IBurpExtender, burp.IHttpListener
                     Pattern pattern = Pattern.compile(".*IntMePlease(\\d*).*");
                     Matcher matcher = pattern.matcher(reqBody);
                     if (matcher.find()){
-                        int counterIntFound = matcher.group(1).isEmpty() ? 0 : Integer.parseInt(matcher.group(1));
-                        // System.out.println(counterIntFound);
+                        String seed = matcher.group(1);
+                        int counterIntFound = 0;
+                        if (!seed.isEmpty()) {
+                            try {
+                                counterIntFound = Integer.parseInt(seed);
+                            } catch (NumberFormatException e) {
+                                // Too large for an int. Start from 0 rather than letting the
+                                // exception escape, which would drop every replacement below.
+                                stderr.println("IntMePlease seed \"" + seed + "\" is not a valid int, starting from 0");
+                            }
+                        }
                         counterInt = counterIntFound;
                         foundInt = true;
                     }
@@ -97,9 +106,15 @@ public class BurpExtender implements burp.IBurpExtender, burp.IHttpListener
                     Pattern pattern = Pattern.compile(".*FloatMePlease(\\d*\\.\\d*).*");
                     Matcher matcher = pattern.matcher(reqBody);
                     if (matcher.find()){
-                        float counterFloutFound = Float.parseFloat(matcher.group(1));
-                        // System.out.println(counterFloutFound);
-                        counterFloat = counterFloutFound;
+                        String seed = matcher.group(1);
+                        float counterFloatFound = 0;
+                        try {
+                            counterFloatFound = Float.parseFloat(seed);
+                        } catch (NumberFormatException e) {
+                            // A lone "." matches the seed pattern but is not a number.
+                            stderr.println("FloatMePlease seed \"" + seed + "\" is not a valid float, starting from 0");
+                        }
+                        counterFloat = counterFloatFound;
                         foundFloat = true;
                     }
                 }
