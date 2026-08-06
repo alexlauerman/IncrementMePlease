@@ -1,15 +1,21 @@
-apply plugin: 'java'
+plugins {
+    id 'java'
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile 'net.portswigger.burp.extender:burp-extender-api:1.7.22'
+    implementation 'net.portswigger.burp.extender:burp-extender-api:1.7.22'
 }
 
-targetCompatibility = '1.8'
-sourceCompatibility = '1.8'
+java {
+    // Kept at 8 so the extension still loads in older Burp installs.
+    // Requires a JDK that can still target 8 (JDK 17 does).
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 sourceSets {
     main {
@@ -22,8 +28,12 @@ sourceSets {
     }
 }
 
-task fatJar(type: Jar) {
-    baseName = project.name + '-all'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
+// BappManifest.bmf expects this exact artifact: build/libs/token-incrementor-all.jar
+tasks.register('fatJar', Jar) {
+    archiveBaseName = "${project.name}-all"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from sourceSets.main.output
+    from({ configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }) {
+        exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+    }
 }

@@ -1,3 +1,5 @@
 .idea
 IncrementMePlease.iml
 out
+build
+.gradle
